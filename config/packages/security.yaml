@@ -1,0 +1,36 @@
+security:
+    encoders:
+        App\Entity\User: bcrypt
+
+    # ...
+
+    providers:
+        our_db_provider:
+            entity:
+                class: App\Entity\User
+                property: username
+                # если вы используете несколько менеджеров сущностей
+                # manager_name: customer
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+        main:
+            anonymous: ~
+            form_login:
+                login_path: app_login
+                check_path: app_login
+                username_parameter :  username 
+                password_parameter :  password 
+                default_target_path: /projects
+            logout:
+                path: app_logout
+                target: /login
+    role_hierarchy:
+        ROLE_ADMIN: ROLE_USER
+    access_control:
+        - { path: ^/admin, roles: ROLE_ADMIN}
+        - { path: ^/register, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+        - { path: ^/projects, roles: ROLE_USER }
