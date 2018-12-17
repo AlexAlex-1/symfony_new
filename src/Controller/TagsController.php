@@ -18,13 +18,13 @@ class TagsController extends AbstractController
      * @Route("/tags/{id}")
      */
 
-        public function show(Tags $tag): Response
+        public function show(Tags $tag)
         {
             $tagId = $tag->getId();
             $tickets = $this->getDoctrine()
                 ->getRepository(Tags::class)
                 ->findByTags($tagId);
-            return $this->render('tags/index.html.twig', [
+            return $this->render('tags/show.html.twig', [
                 'tickets' => $tickets,
                 'tags' =>$tag,
             ]);

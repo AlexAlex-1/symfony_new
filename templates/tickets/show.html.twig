@@ -26,13 +26,13 @@
         <li>Statut: {{ticket.status}}</li>
         <li>File: <a href="{{asset('files/'~ticket.File)}}" download>Download</a></li>
     </ul>
-    <a href="/projects/watch/{{ticket.projectid}}">Back</a>
+    <a href="/projects/show/{{ticket.projectid}}">Back</a>
     {%if is_granted('EDIT', ticket)%}
         <a href="/projects/tickets/del/{{ticket.id}}" class="text-danger" onclick="return confirm('Точно удалить?!')">Delete this ticket</a>
         <a href="/projects/tickets/{{ticket.id}}/edit">Edit ticket</a>
     {%endif%}<br>
     <h3>Tags:</h3>
-    {%for key in tags%}
-        <a href="/tags/{{key.0.id}}">#{{key.0.Name}}</a>
+    {%for tag in tags%}
+    <a href="/tags/{{tag.id}}">#{{tag.Name}}</a>
     {%endfor%}
 {%endblock%}

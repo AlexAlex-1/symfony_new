@@ -19,7 +19,7 @@ class ProjectsController extends AbstractController
     /**
      * @Route("/projects", name="start")
      */
-    public function watchAllProjects()
+    public function index()
     {
         $projects = $this->getDoctrine()->getRepository(Projects::class)->findAll();
         return $this->render('projects/index.html.twig', [
@@ -28,18 +28,18 @@ class ProjectsController extends AbstractController
         ]);
     }
     /**
-    * @Route("/projects/watch/{id}", name="projects_info")
+    * @Route("/projects/show/{id}", name="projects_show")
     */
-    public function watchProject($id){
-      $project = $this->getDoctrine()->getRepository(Projects::class)->find($id);
-      $tickets = $this->getDoctrine()->getRepository(Tickets::class)->findBy(['project_id'=>$id]);
-      if (!isset($project)){
-        return $this->render('/404.html.twig');
-      }
-      return $this->render('projects/watch.html.twig',[
+    public function showProject($id){
+        $project = $this->getDoctrine()->getRepository(Projects::class)->find($id);
+        $tickets = $this->getDoctrine()->getRepository(Tickets::class)->findBy(['project_id'=>$id]);
+        if (!isset($project)){
+            return $this->render('/404.html.twig');
+        }
+        return $this->render('projects/show.html.twig',[
         'project'=>$project,
         'tickets'=>$tickets,
-      ]);
+        ]);
     }
     /**
     * @Route("/projects/create", name="create", methods="GET|POST")
@@ -60,7 +60,7 @@ class ProjectsController extends AbstractController
           $save->persist($project);
           $save->flush();
           $projectid = $project->getId();
-          return $this->redirectToRoute("projects_info", ['id'=>$projectid]);
+          return $this->redirectToRoute("projects_show", ['id'=>$projectid]);
         }
         return $this->render('projects/create.html.twig', [
             'user'=>$user,
@@ -79,7 +79,7 @@ class ProjectsController extends AbstractController
         $this->getDoctrine()->getManager()->flush();
         $form = $this->createForm(editProject::class, $projects);
         $form->handleRequest($request);
-        return $this->redirectToRoute('projects_info', ['id'=>$id]);
+        return $this->redirectToRoute('projects_show', ['id'=>$id]);
       }
       return $this->render('projects/edit.html.twig', [
         'project'=>$projects,
@@ -90,11 +90,11 @@ class ProjectsController extends AbstractController
     * @Route("/projects/del/id={id}",methods="GET|POST");
     */
     public function deleteProject(Request $request, Projects $projects, $id){
-      $repository = $this->getDoctrine()->getManager();
-      $project = $repository->getRepository(Projects::class)->find($id);
-      $repository->remove($project);
-      $repository->flush();
-      return $this->redirectToRoute('start');
+        $repository = $this->getDoctrine()->getManager();
+        $project = $repository->getRepository(Projects::class)->find($id);
+        $repository->remove($project);
+        $repository->flush();
+        return $this->redirectToRoute('start');
     }
     
     /**
