@@ -35,9 +35,6 @@ class TicketVoter extends Voter
     {
 
     $user = $token->getUser();
-    if ($this->decisionManager->decide($token, array('ROLE_ADMIN'))){
-        return true;
-    }
     if (!$user instanceof User) {
         return false;
     }

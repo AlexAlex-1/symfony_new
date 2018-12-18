@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Controller;
-use App\Form\editTicket;
 use App\Entity\Tickets;
 use App\Entity\User;
 use App\Entity\Projects;
@@ -33,7 +32,7 @@ class TicketsController extends AbstractController
         $ticket = $this->getDoctrine()->getRepository(Tickets::class)->find($id);
         $tictag = $this->getDoctrine()->getRepository(TicketsTags::class)->findBy(['Ticket_id'=>$id]);
         $tagsID = array();
-        $tags = $this->getDoctrine()->getRepository(Tickets::class)->findByTickets($id);
+        $tags = $this->getDoctrine()->getRepository(Tags::class)->findByTickets($id);
         $tag = new Tags();
         $form = $this->createFormBuilder($tag)
             ->add('Name')
@@ -68,7 +67,7 @@ class TicketsController extends AbstractController
                     }
                 }
                 
-                $ticTag = new TicketSTags();
+                $ticTag = new TicketsTags();
                 $ticTag->setTicketId($id);
                 $ticTag->setTagId($tagId);
                 $save = $this->getDoctrine()->getManager();
@@ -97,9 +96,8 @@ class TicketsController extends AbstractController
         $ticket = new Tickets();
         $userId_session = $this->getUser()->getId();
         $userName_session = $this->getUser()->getUsername();
-//        $users = $this->getDoctrine()->getRepository(User::class);
         $users = $this->getDoctrine()->getRepository(User::class)->findAll();
-        $userName = array("$userName_session"=>"$userId_session");
+        $userName = array($userName_session=>$userId_session);
             foreach ($users as $user)
             {
                 $userName[$user->getUsername()] = $user->getId();
@@ -172,8 +170,25 @@ class TicketsController extends AbstractController
 
     public function editTicket(Request $request, Tickets $tickets, $id)
     {
-
-        $form = $this->createForm(editTicket::class, $tickets);
+        $users = $this->getDoctrine()->getRepository(User::class)->findAll();
+        $userNames = array();
+        foreach ($users as $user){
+            $userNames[$user->getUsername()] = $user->getId();
+        }
+        $form = $this->createFormBuilder($tickets)
+            ->add('Name')
+            ->add('Description')
+            ->add('AssigneeId', ChoiceType::class, array('choices'=>$userNames))
+            ->add('Status', ChoiceType::class, array(
+                'choices'=>array(
+                    'New'=>'New',
+                    'In progress'=>'In progress',
+                    'Testing'=>'Testing',
+                    'Done'=>'Done',
+                ),
+            ))
+            ->add('Submit', SubmitType::class)
+            ->getForm();
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()){
             $this->getDoctrine()->getManager()->flush();

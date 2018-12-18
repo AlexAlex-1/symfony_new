@@ -3,9 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Tags;
-use App\Entity\TicketsTags;
 use App\Entity\Tickets;
-use App\Entity\Projects;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -22,7 +20,7 @@ class TagsController extends AbstractController
         {
             $tagId = $tag->getId();
             $tickets = $this->getDoctrine()
-                ->getRepository(Tags::class)
+                ->getRepository(Tickets::class)
                 ->findByTags($tagId);
             return $this->render('tags/show.html.twig', [
                 'tickets' => $tickets,

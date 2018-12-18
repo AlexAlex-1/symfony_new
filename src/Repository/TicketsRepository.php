@@ -48,16 +48,16 @@ class TicketsRepository extends ServiceEntityRepository
             ->getOneOrNullResult()
         ;
     }
-     */
-    public function findByTickets($tickets){
+     */ 
+    public function findByTags($tags){
         $query = $this->getEntityManager()->createQuery(
         "SELECT e
-        FROM App\Entity\Tickets k
+        FROM App\Entity\Tags k
         JOIN App\Entity\TicketsTags l
-        WITH l.Ticket_id = k.id
-        JOIN App\Entity\Tags e
-        WITH e.id = l.Tag_id
-        WHERE k.id = $tickets"
+        WITH l.Tag_id = k.id
+        JOIN App\Entity\Tickets e
+        WITH e.id = l.Ticket_id
+        WHERE k.id = $tags"
         );
         return $query->execute();
     }
